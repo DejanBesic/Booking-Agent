@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agent.app.model.Facility;
 import com.agent.app.ws.WSFacilityClient;
-import com.agent.app.wsdl.FacilityResponse;
+import com.agent.app.wsdl.AgentFacilitiesWS;
+import com.agent.app.wsdl.UserWS;
 
 
 @RestController
@@ -19,24 +20,18 @@ public class FacilityController {
 	@Autowired
 	WSFacilityClient client;
 	
-	@GetMapping
+	@GetMapping(value="/getFacilities")
     public ResponseEntity<?> getFacilities() {
     
-		
-		Facility facility = new Facility();
-		facility.setAddress("adresa");
-		facility.setCategory(1);
-		facility.setDescription("opis");
-		facility.setName("naziv");
-		facility.setWifi(true);
+		UserWS user = new UserWS();
+		user.setId(1);
 		
 		
-		FacilityResponse response = client.facilityWS(facility);
+		AgentFacilitiesWS response = client.facilityWS(user);
 		if(response == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		
-		facility.setName(response.getName());
 		
-    	return new ResponseEntity<>(facility, HttpStatus.OK);
+    	return new ResponseEntity<>(response.getFacilityWS(), HttpStatus.OK);
     }
 }
